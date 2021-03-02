@@ -12,7 +12,7 @@ export default class GalleryPlugin extends Plugin {
 	async onload() {
 		// Load message
 		await this.loadSettings();
-		console.log('Loaded Activity Plugin');
+		console.log('Loaded Gallery Plugin');
 
 		// Register activity history block renderer
 		this.registerMarkdownCodeBlockProcessor('Gallery', async (source, el, ctx) => {
@@ -24,7 +24,7 @@ export default class GalleryPlugin extends Plugin {
 	}
 
 	onunload() {
-		console.log('unloading activity plugin');
+		console.log('unloading Gallery Plugin');
 	}
 
 	async loadSettings() {
