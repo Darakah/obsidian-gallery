@@ -3,7 +3,6 @@
   import gridHelp from "svelte-grid/build/helper/index.mjs";
 
   export let imgList;
-  export let basePath;
   export let width = 5;
   export let fillFree = false;
   export let columns = 25;
@@ -40,8 +39,7 @@
     <!-- svelte-ignore a11y-missing-attribute -->
     <div
       class="gallery-widget internal-link"
-      style="background-image: url(app://local/{basePath}/{dataItem
-        .id.path});"
+      style="background-image: url({dataItem.id});"
     />
   </Grid>
 </div>

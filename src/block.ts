@@ -3,17 +3,18 @@ import type { GallerySettings } from './types';
 
 export class GalleryProcessor {
 
-	async run(source: string, el: HTMLElement, imgs: string[], basePath: string, settings: GallerySettings) {
+	async run(source: string, el: HTMLElement, imgs: string[], settings: GallerySettings, args: string[]) {
 
 		source = source.trim()
 		let elCanvas = el.createDiv({ cls: 'ObsidianHistoryBlock' });
+		let widthPar = parseInt(args[4]) ? parseInt(args[4]) : settings.width
+		let columnPar = parseInt(args[5]) ? parseInt(args[5]) : settings.columns
 
 		new Gallery({
 			props: {
 				imgList: imgs,
-				width: settings.width,
-				column: settings.columns,
-				basePath: basePath,
+				width: widthPar,
+				column: columnPar,
 				fillFree: settings.fillFree,
 			},
 			target: elCanvas

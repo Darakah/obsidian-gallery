@@ -17,7 +17,8 @@ export default class GalleryPlugin extends Plugin {
 		// Register activity history block renderer
 		this.registerMarkdownCodeBlockProcessor('Gallery', async (source, el, ctx) => {
 			const proc = new GalleryProcessor();
-			await proc.run(source, el, getImgs(source.trim(), this.app.vault.getFiles()),this.app.vault.adapter.basePath, this.settings);
+			let args = source.split("\n")
+			await proc.run(source, el, getImgs(args, this.app.vault.getFiles(), this.app.vault.adapter), this.settings, args);
 		});
 
 		this.addSettingTab(new GallerySettingTab(this.app, this));

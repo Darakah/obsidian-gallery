@@ -1,4 +1,4 @@
-import type { TFile } from 'obsidian';
+import type { TFile, DataAdapter } from 'obsidian';
 
 /**
  * Return images in the specified directory
@@ -6,17 +6,27 @@ import type { TFile } from 'obsidian';
  * @param vaultFiles - list of all TFiles of Obsidian vault
  */
 
-export const getImgs = (projectPath: string, vaultFiles: TFile[]): string[] => {
+export const getImgs = (args: string[], vaultFiles: TFile[], handler: DataAdapter): string[] => {
     let imgList = [];
-    let reg = new RegExp(`^${projectPath}\/.*\.[(png)(jpg)(jpeg)]$`)
 
-    if (projectPath === '/') {
+    let reg = new RegExp(`^${args[0]}\/${args[1]}.*\.[(png)(jpg)(jpeg)]$`)
+    if (args[0] === '/') {
         reg = new RegExp(`^.*\.[(png)(jpg)(jpeg)]$`)
     }
+
     for (let file in vaultFiles) {
         if (vaultFiles[file].path.match(reg)) {
-            imgList.push(vaultFiles[file]);
+            imgList.push(handler.getResourcePath(vaultFiles[file].path));
         }
     }
+
+    if (args[2] === "+") {
+        imgList = imgList.reverse()
+    }
+
+    if (args[3] != "") {
+        imgList = args[3].split(" ").map(i => parseInt(i)).filter(value => !Number.isNaN(value)).map(i => imgList[i])
+    }
+
     return imgList;
 }
