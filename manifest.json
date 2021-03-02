@@ -3,7 +3,7 @@
     "name": "Gallery",
     "version": "0.1.0",
     "minAppVersion": "0.10.11",
-    "description": "Track activity of specified projects, Github like activity board",
+    "description": "Interactive Card like gallery display of images",
     "author": "darakah",
     "authorUrl": "https://github.com/Darakah/",
     "isDesktopOnly": false
