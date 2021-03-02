@@ -4,6 +4,10 @@
 
 Simple plugin to create an interactive gallery of images in the specified location of the vault
 
+- Images can be resized 
+- Images can be dragged and rearranged
+(made changes will be removed when the note is re-opened as the object will be recreated and automatically updated)
+
 #### Example:
 ![example_1](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_1.png) 
 
