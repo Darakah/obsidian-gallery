@@ -30,7 +30,7 @@ the query block can take more parameters then just the folder path from which to
 The option is specified based on the **LINE**!! So if you want to specify width and not use the previous options YOU MUST KEEP AN EMPTY LINE in its place!
 the options are as follows based on the line number:
 - **Folder Path:** As specified above, this specifies the folder inside which to get the images to display (MUST NOT HAVE A `/` AT THE BEGINNING OR THE END!! check syntax above!)
-- **Image Name:** Specifies a regex to further filter images based on their name. in the above example only images starting with `TS_test_` will be displayed
+- **Image Name:** Specifies a regex to further filter images based on their name. in the above example only images starting with `TS_test_` will be displayed. the regex the plugin uses to catch the images is `^${args[0]}\/.*${args[1]}.*\.[(png)(jpg)(jpeg)]$` as such, the image name can include regex such as `.*` to catch further downstream images. 
 - **Sort Order:** `+` the images will be displayed in the same order as the file explorer while `-` will be displayed in the reverse order. default is `-`
 - **Custom Index:** custom order for the images (after you show all you can count starting from 0 the index of the position) specifying these, it will show ONLY the ones corresponding to these indexes and in that specific order.
 - **Width:** Width which applies only to this block (this way can customize for each note)
