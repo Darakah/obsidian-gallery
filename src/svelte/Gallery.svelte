@@ -5,7 +5,7 @@
   export let imgList;
   export let width = 5;
   export let fillFree = false;
-  export let columns = 25;
+  let columns = 25;
 
   function generateLayout(col) {
     return new Array(imgList.length).fill(null).map(function (item, i) {

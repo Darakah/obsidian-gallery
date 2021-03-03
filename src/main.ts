@@ -14,8 +14,8 @@ export default class GalleryPlugin extends Plugin {
 		await this.loadSettings();
 		console.log('Loaded Gallery Plugin');
 
-		// Register gallery block renderer
-		this.registerMarkdownCodeBlockProcessor('Gallery', async (source, el, ctx) => {
+		// Register activity history block renderer
+		this.registerMarkdownCodeBlockProcessor('gallery', async (source, el, ctx) => {
 			const proc = new GalleryProcessor();
 			let args = source.split("\n")
 			await proc.run(source, el, getImgs(args, this.app.vault.getFiles(), this.app.vault.adapter), this.settings, args);

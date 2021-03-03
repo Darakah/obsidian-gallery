@@ -8,13 +8,11 @@ export class GalleryProcessor {
 		source = source.trim()
 		let elCanvas = el.createDiv({ cls: 'ObsidianHistoryBlock' });
 		let widthPar = parseInt(args[4]) ? parseInt(args[4]) : settings.width
-		let columnPar = parseInt(args[5]) ? parseInt(args[5]) : settings.columns
 
 		new Gallery({
 			props: {
 				imgList: imgs,
 				width: widthPar,
-				column: columnPar,
 				fillFree: settings.fillFree,
 			},
 			target: elCanvas

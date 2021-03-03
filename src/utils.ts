@@ -9,9 +9,9 @@ import type { TFile, DataAdapter } from 'obsidian';
 export const getImgs = (args: string[], vaultFiles: TFile[], handler: DataAdapter): string[] => {
     let imgList = [];
 
-    let reg = new RegExp(`^${args[0]}\/${args[1]}.*\.[(png)(jpg)(jpeg)]$`)
+    let reg = new RegExp(`^${args[0]}\/.*${args[1]}.*\.[(png)(jpg)(jpeg)]$`)
     if (args[0] === '/') {
-        reg = new RegExp(`^.*\.[(png)(jpg)(jpeg)]$`)
+        reg = new RegExp(`^.*${args[1]}.*\.[(png)(jpg)(jpeg)]$`)
     }
 
     for (let file in vaultFiles) {
@@ -20,11 +20,11 @@ export const getImgs = (args: string[], vaultFiles: TFile[], handler: DataAdapte
         }
     }
 
-    if (args[2] === "+") {
+    if (args[2] && args[2] === "+") {
         imgList = imgList.reverse()
     }
 
-    if (args[3] != "") {
+    if (args[3] && args[3] != "") {
         imgList = args[3].split(" ").map(i => parseInt(i)).filter(value => !Number.isNaN(value)).map(i => imgList[i])
     }
 

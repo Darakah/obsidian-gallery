@@ -16,7 +16,7 @@ export class GallerySettingTab extends PluginSettingTab {
         containerEl.createEl('h2', { text: 'Gallery Settings' });
 
         new Setting(containerEl)
-            .setName('Width:')
+            .setName('Default Width')
             .setDesc('Panel width. integer, placeholder shows current value.')
             .addText(text => text
                 .setPlaceholder(this.plugin.settings.width)
@@ -30,24 +30,6 @@ export class GallerySettingTab extends PluginSettingTab {
                     this.plugin.settings.width = Math.abs(numValue);
                     await this.plugin.saveSettings();
                 }));
-
-        new Setting(containerEl)
-            .setName('Columns:')
-            .setDesc(`Columns of the gallery grid. integer, larger number -> more columns (default = 25 which corresponds to 5 columns). 
-            Placeholder shows current value.`)
-            .addText(text => text
-                .setPlaceholder(this.plugin.settings.columns)
-                .onChange(async (value) => {
-                    let numValue = parseInt(value)
-                    // check if valid hex
-                    if (isNaN(numValue)) {
-                        return
-                    }
-
-                    this.plugin.settings.columns = Math.abs(numValue);
-                    await this.plugin.saveSettings();
-                }));
-
 
         new Setting(containerEl)
             .setName('Fill free')
