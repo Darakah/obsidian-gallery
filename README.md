@@ -15,6 +15,7 @@ Simple plugin to create an interactive gallery of images in the specified locati
 
 Write the render block example shown below in edit mode in the note in which you want to add the render block.
 ![example_2](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_2.png) 
+
 It must contain a single line corresponding to the path of the project, for example:
 - `/` for the whole vault
 - `Project Example Test` for the project located at `/Project Example Test` 
