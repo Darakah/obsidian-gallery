@@ -22,7 +22,7 @@ It must contain a single line corresponding to the path of the project, for exam
 
 ## Special Options:
 the query block can take more parameters then just the folder path from which to get the images to display. 
-![example_2](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_4.png) 
+![example_2](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_3.png) 
 The option is specified based on the **LINE**!! So if you want to specify width and not use the previous options YOU MUST KEEP AN EMPTY LINE in its place!
 the options are as follows based on the line number:
 - **Folder Path:** As specified above, this specifies the folder inside which to get the images to display (MUST NOT HAVE A `/` AT THE BEGINNING OR THE END!! check syntax above!)
@@ -31,6 +31,9 @@ the options are as follows based on the line number:
 - **Custom Index:** custom order for the images (after you show all you can count starting from 0 the index of the position) specifying these, it will show ONLY the ones corresponding to these indexes and in that specific order. (THE INDEX IS IN THE DEFAULT ORDER I.E. '-' SO IF YOU ARE USING '+' YOU NEED TO COUNT FROM THE END OF THE TABLE ;()
 - **Custom Index:** custom order for the images (after you show all you can count starting from 0 the index of the position) specifying these, it will show ONLY the ones corresponding to these indexes and in that specific order.
 - **Width:** Width which applies only to this block (this way can customize for each note)
+
+## Settings:
+![example_4](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_4.png) 
 
 ## Release Notes:
 
