@@ -14,6 +14,7 @@ Simple plugin to create an interactive gallery of images in the specified locati
 ## Usage:
 
 Write the render block example shown below in edit mode in the note in which you want to add the render block.
+
 ![example_2](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_2.png) 
 
 It must contain a single line corresponding to the path of the project, for example:
@@ -23,7 +24,9 @@ It must contain a single line corresponding to the path of the project, for exam
 
 ## Special Options:
 the query block can take more parameters then just the folder path from which to get the images to display. 
+
 ![example_2](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_3.png) 
+
 The option is specified based on the **LINE**!! So if you want to specify width and not use the previous options YOU MUST KEEP AN EMPTY LINE in its place!
 the options are as follows based on the line number:
 - **Folder Path:** As specified above, this specifies the folder inside which to get the images to display (MUST NOT HAVE A `/` AT THE BEGINNING OR THE END!! check syntax above!)
