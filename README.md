@@ -33,7 +33,7 @@ the options are as follows based on the line number:
 - **Width:** Width which applies only to this block (this way can customize for each note)
 
 ## Settings:
-![example_4](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_4.png) 
+![example_4](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_5.png) 
 
 ## Release Notes:
 
