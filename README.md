@@ -46,4 +46,4 @@ the options are as follows based on the line number:
 - removed meaningless confusing `column` parameter
 
 ## Support
-[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="100">](https://www.buymeacoffee.com/darakah)
+[![Github Sponsorship](https://github.com/Darakah/Darakah/blob/main/icons/github_sponsor_btn.svg)](https://github.com/sponsors/Darakah) [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="BuyMeACoffee" width="100">](https://www.buymeacoffee.com/darakah)
