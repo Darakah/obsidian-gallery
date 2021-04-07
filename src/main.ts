@@ -1,9 +1,7 @@
-import { Plugin, Vault, DataAdapter } from 'obsidian';
-import { getImgs } from './utils'
-import { GallerySettingTab } from './settings'
-import { GalleryProcessor } from './block'
-import type { GallerySettings } from './types';
-import { DEFAULT_SETTINGS } from './constants';
+import { Plugin } from 'obsidian';
+import { getImgs, GallerySettings, SETTINGS } from './utils';
+import { GallerySettingTab } from './settings';
+import { GalleryProcessor } from './block';
 
 export default class GalleryPlugin extends Plugin {
 	settings: GallerySettings;
@@ -17,7 +15,7 @@ export default class GalleryPlugin extends Plugin {
 		// Register activity history block renderer
 		this.registerMarkdownCodeBlockProcessor('gallery', async (source, el, ctx) => {
 			const proc = new GalleryProcessor();
-			let args = source.split("\n")
+			let args = source.split("\n");
 			await proc.run(source, el, getImgs(args, this.app.vault.getFiles(), this.app.vault.adapter), this.settings, args);
 		});
 
@@ -29,7 +27,7 @@ export default class GalleryPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, SETTINGS, await this.loadData());
 	}
 
 	async saveSettings() {

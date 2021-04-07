@@ -1,5 +1,5 @@
-import { App, PluginSettingTab, Setting } from 'obsidian'
-import type { GalleryPlugin } from 'main'
+import { App, PluginSettingTab, Setting } from 'obsidian';
+import type GalleryPlugin from './main';
 
 export class GallerySettingTab extends PluginSettingTab {
     plugin: GalleryPlugin;
@@ -19,12 +19,12 @@ export class GallerySettingTab extends PluginSettingTab {
             .setName('Default Width')
             .setDesc('Panel width. integer, placeholder shows current value.')
             .addText(text => text
-                .setPlaceholder(this.plugin.settings.width)
+                .setPlaceholder(`${this.plugin.settings.width}`)
                 .onChange(async (value) => {
-                    let numValue = parseInt(value)
+                    let numValue = parseInt(value);
                     // check if valid hex
                     if (isNaN(numValue)) {
-                        return
+                        return;
                     }
 
                     this.plugin.settings.width = Math.abs(numValue);
@@ -40,6 +40,6 @@ export class GallerySettingTab extends PluginSettingTab {
                     this.plugin.settings.fillFree = value;
                     await this.plugin.saveSettings();
                 });
-            })
+            });
     }
 }

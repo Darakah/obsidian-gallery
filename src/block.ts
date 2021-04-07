@@ -1,13 +1,13 @@
-import Gallery from './svelte/Gallery.svelte'
-import type { GallerySettings } from './types';
+import Gallery from './svelte/Gallery.svelte';
+import type { GallerySettings } from './utils';
 
 export class GalleryProcessor {
 
 	async run(source: string, el: HTMLElement, imgs: string[], settings: GallerySettings, args: string[]) {
 
-		source = source.trim()
+		source = source.trim();
 		let elCanvas = el.createDiv({ cls: 'ObsidianHistoryBlock' });
-		let widthPar = parseInt(args[4]) ? parseInt(args[4]) : settings.width
+		let widthPar = parseInt(args[4]) ? parseInt(args[4]) : settings.width;
 
 		new Gallery({
 			props: {
@@ -16,7 +16,7 @@ export class GalleryProcessor {
 				fillFree: settings.fillFree,
 			},
 			target: elCanvas
-		})
+		});
 
 		el.appendChild(elCanvas);
 	}
