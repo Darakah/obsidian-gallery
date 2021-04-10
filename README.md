@@ -2,16 +2,35 @@
 ![GitHub release)](https://img.shields.io/github/v/release/Darakah/obsidian-gallery)
 ![GitHub all releases](https://img.shields.io/github/downloads/Darakah/obsidian-gallery/total)
 
-Simple plugin to create an interactive gallery of images in the specified location of the vault
-
-- Images can be resized 
-- Images can be dragged and rearranged
-(made changes will be removed when the note is re-opened as the object will be recreated and automatically updated)
+- Main Gallery to tag / filter / add notes to images.
+- Display blocks to embed images inside notes
+- Display block to an image information
 
 #### Example:
+
+##### Main Gallery
+![](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/Example_main_gallery_1.gif)
+
+##### Main Gallery Filtering
+
+![](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/Example_main_gallery_2.gif)
+
+##### Display blocks
+
+![](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/Example_Display_Block.gif)
+
+##### Display Image Info block
+
+![](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/Example_Info_Block.gif)
+
+##### Old example
 ![example_1](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_1.png) 
 
 ## Usage:
+
+
+>>>>>> OLD DESCRIPTION NEEDS TO BE UPDATED
+
 
 Write the render block example shown below in edit mode in the note in which you want to add the render block.
 
