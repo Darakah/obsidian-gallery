@@ -101,3 +101,9 @@
     opacity: 1;
     transform: scale(1.04);
 }
+
+.gallery-resources-alert {
+    padding: 20px;
+    background-color: var(--background-modifier-error-hover);
+    color: var(--light0-hard);
+}

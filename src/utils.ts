@@ -6,8 +6,8 @@ export interface GallerySettings {
     imgDataFolder: string,
     galleryLoadPath: string,
     imgPrefix: number,
-    width: number,
-    fillFree: boolean,
+    width: number;
+    reverseDisplay: boolean;
 }
 
 export interface ImageResources {
@@ -35,7 +35,7 @@ export const SETTINGS: GallerySettings = {
     galleryLoadPath: "/",
     imgPrefix: 0,
     width: 400,
-    fillFree: true
+    reverseDisplay: true
 };
 
 export const EXTRACT_COLORS_OPTIONS = {
@@ -106,6 +106,13 @@ Please Check Release Notes for plugin changes:<br>
 https://github.com/Darakah/obsidian-gallery#release-notes
 `;
 
+export const GALLERY_RESOURCES_MISSING = `
+<div class="gallery-resources-alert">
+  <strong>Missing or Unspecified Image Information Resources folder</strong>
+</div>
+
+Please make sure that a Valid Folder is specified in the settings for the plugin to use to store image information notes!
+`;
 
 /**
  * Return initial img info file content

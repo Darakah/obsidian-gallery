@@ -1,6 +1,6 @@
 import { ItemView, WorkspaceLeaf, setIcon, MarkdownRenderer, TFile, debounce } from 'obsidian';
 import type { ImageResources } from './utils';
-import { OB_GALLERY, OB_GALLERY_INFO, gallerySearchIcon, getImageResources, getImgInfo } from './utils';
+import { OB_GALLERY, OB_GALLERY_INFO, GALLERY_RESOURCES_MISSING, gallerySearchIcon, getImageResources, getImgInfo } from './utils';
 import * as CodeMirror from 'codemirror';
 import ImageGrid from './svelte/ImageGrid.svelte';
 import type GalleryPlugin from './main';
@@ -288,11 +288,17 @@ export class GalleryInfoView extends ItemView {
             this.app.metadataCache,
             this.plugin);
 
+        // Handle disabled img info functionality or missing info block
+        let infoText = GALLERY_RESOURCES_MISSING;
+        if (this.infoFile) {
+            infoText = await this.app.vault.cachedRead(this.infoFile);
+        }
+
         // Clear the preview and editor history
         this.clear();
 
         // Set Editor to new file content
-        this.editor.setValue(await this.app.vault.cachedRead(this.infoFile));
+        this.editor.setValue(infoText);
         this.render();
     }
 

@@ -122,7 +122,7 @@ export class GalleryProcessor {
 				props: {
 					imgList: imgList,
 					width: args.imgWidth / 50,
-					fillFree: plugin.settings.fillFree,
+					fillFree: true,
 				},
 				target: elCanvas
 			});
@@ -151,6 +151,13 @@ export class GalleryProcessor {
 		let imgEl = new Image();
 		imgEl.src = imgURL;
 
+		// Handle disabled img info functionality or missing info block
+		let imgInfo = await getImgInfo(imgTFile.path, vault, metadata, plugin);
+		let imgTags = null;
+		if (imgInfo) {
+			imgTags = getAllTags(metadata.getFileCache(imgInfo));
+		}
+
 		if (imgTFile instanceof TFile && EXTENSIONS.contains(imgTFile.extension)) {
 			new GalleryInfo({
 				props: {
@@ -161,7 +168,7 @@ export class GalleryProcessor {
 					dimensions: imgEl,
 					size: imgTFile.stat.size / 1000000,
 					colorList: await extractColors(imgURL, EXTRACT_COLORS_OPTIONS),
-					tagList: getAllTags(metadata.getFileCache(await getImgInfo(imgTFile.path, vault, metadata, plugin)))
+					tagList: imgTags
 				},
 				target: elCanvas
 			});
