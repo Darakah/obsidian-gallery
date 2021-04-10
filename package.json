@@ -11,9 +11,16 @@
         "dev": "rollup --config rollup.config.js -w"
     },
     "dependencies": {
+        "canvas": "^2.7.0",
+        "codemirror": "^5.60.0",
+        "extract-colors": "^1.1.18",
         "obsidian": "obsidianmd/obsidian-api#master",
+        "rollup-plugin-copy": "^3.4.0",
         "svelte": "^3.32.3",
         "svelte-grid": "^4.0.0",
+        "svelte-image": "^0.1.9",
+        "svelte-image-gallery": "^1.3.0",
+        "svelte-swipe": "^1.8.0",
         "tslib": "2.1.0"
     },
     "devDependencies": {

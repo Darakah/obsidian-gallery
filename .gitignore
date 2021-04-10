@@ -1,2 +1,4 @@
 node_modules
 main.js
+.DS_Store
+data.json

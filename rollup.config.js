@@ -3,6 +3,8 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import autoPreprocess from "svelte-preprocess";
+import image from "svelte-image";
+import copy from 'rollup-plugin-copy';
 import { env } from "process";
 
 export default {
@@ -17,6 +19,9 @@ export default {
         svelte({
             emitCss: false,
             preprocess: autoPreprocess(),
+            preprocess: {
+                ...image(),
+            }
         }),
         typescript({ sourceMap: env.env === "DEV" }),
         resolve({
@@ -25,6 +30,9 @@ export default {
         }),
         commonjs({
             include: "node_modules/**",
+        }),
+        copy({
+            targets: [{ src: 'static/g', dest: 'public' }],
         }),
     ],
 };

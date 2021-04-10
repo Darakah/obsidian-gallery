@@ -43,23 +43,3 @@
     />
   </Grid>
 </div>
-
-<style>
-  .gallery-widget {
-    background: var(--background-secondary);
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 60%;
-    background-size: cover;
-    background-position: center center;
-    border-radius: 10px 10px 0px 0px;
-  }
-
-  .gallery-container {
-    max-width: auto;
-    width: auto;
-  }
-</style>
