@@ -84,7 +84,8 @@ export class GalleryView extends ItemView {
         this.imgList = Object.keys(this.imgResources);
         new ImageGrid({
             props: {
-                imageList: this.imgList
+                imageList: this.imgList,
+                maxColumnWidth: this.plugin.settings.width
             },
             target: this.imagesContainer
         });
