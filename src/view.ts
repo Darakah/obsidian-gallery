@@ -82,6 +82,11 @@ export class GalleryView extends ItemView {
             this.app.vault.adapter);
 
         this.imgList = Object.keys(this.imgResources);
+
+        if(this.plugin.settings.reverseDisplay){
+            this.imgList = this.imgList.reverse();
+        }
+        
         new ImageGrid({
             props: {
                 imageList: this.imgList,
