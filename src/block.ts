@@ -152,10 +152,10 @@ export class GalleryProcessor {
 		imgEl.src = imgURL;
 
 		// Handle disabled img info functionality or missing info block
-		let imgInfo = await getImgInfo(imgTFile.path, vault, metadata, plugin);
+		let imgInfo = '';
 		let imgTags = null;
 		if (imgInfo) {
-			imgTags = getAllTags(metadata.getFileCache(imgInfo));
+			imgTags = ''//getAllTags(metadata.getFileCache(imgInfo));
 		}
 
 		if (imgTFile instanceof TFile && EXTENSIONS.contains(imgTFile.extension)) {
