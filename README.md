@@ -28,36 +28,55 @@
 
 ## Usage:
 
+### Image display block Usage
+e.g. Input:
 
->>>>>> OLD DESCRIPTION NEEDS TO BE UPDATED
+```
+path=Weekly
+name=.*Calen
+imgWidth=400
+divWidth=70
+divAlign=left
+reverseOrder=false
+customList=5 10 2 4
+```
 
-
-Write the render block example shown below in edit mode in the note in which you want to add the render block.
-
-![example_2](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_2.png) 
-
-It must contain a single line corresponding to the path of the project, for example:
-- `/` for the whole vault
-- `Project Example Test` for the project located at `/Project Example Test` 
-- `Project Root/Project Second Example/Test Project` for the project located at `/Project Root/Project Second Example/Test Project`
-
-## Special Options:
-the query block can take more parameters then just the folder path from which to get the images to display. 
-
-![example_2](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_3.png) 
-
-The option is specified based on the **LINE**!! So if you want to specify width and not use the previous options YOU MUST KEEP AN EMPTY LINE in its place!
-the options are as follows based on the line number:
-- **Folder Path:** As specified above, this specifies the folder inside which to get the images to display (MUST NOT HAVE A `/` AT THE BEGINNING OR THE END!! check syntax above!)
-- **Image Name:** Specifies a regex to further filter images based on their name. in the above example only images starting with `TS_test_` will be displayed
-- **Sort Order:** `+` the images will be displayed in the same order as the file explorer while `-` will be displayed in the reverse order. default is `-`.
-- **Custom Index:** custom order for the images (after you show all you can count starting from 0 the index of the position) specifying these, it will show ONLY the ones corresponding to these indexes and in that specific order.
-- **Width:** Width which applies only to this block (this way can customize for each note)
+Argument Info:
+- **type**: specify display type. Possible values grid, active-thumb
+- **path**: vault path to display images from. Regex expression
+- **imgWidth**: image width in pixels
+- **divWidth**: div container in %
+- **divAlign**: div alignment. Possible values left, right
+- **reverseOrder**: reverse the display order of images. Possible values true, false
+- **customList**: specify image indexes to display in the passed order
 
 ## Settings:
-![example_4](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/example_5.png) 
+
+![](https://raw.githubusercontent.com/Darakah/obsidian-gallery/main/images/Gallery_Settings.png)
 
 ## Release Notes:
+
+### v0.5.2
+- Duplicate files hotfix
+
+### v0.5.1
+- Add reverse main gallery display option to Obsidian settings
+
+### v0.5.0
+- Initial release of updated plugin
+- Added main gallery 
+  - View all images in vault
+  - Filter images by path / name (Regex)
+  - Add info MD notes to images 
+  - Edit info MD notes directly from gallery side panel
+  - Focus on image click
+  - Navigate through images using left / right arrow keys when focused
+  - Right click image to jump to original file in obsidian vault
+  - Change width of display images from Obsidian settings
+- Modify input format for `image display` blocks
+- Add new `grid` display type to `image display` block (supports most functionalities from main gallery display)
+- Add options to align and specify div % of display block
+- Add new `gallery-info` block to display image info
 
 ### v0.1.2
 - changed block id to `gallery`
