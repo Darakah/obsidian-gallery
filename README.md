@@ -57,7 +57,7 @@ Argument Info:
 ## Release Notes:
 
 ### v0.5.2
-- Duplicate files hotfix
+- Duplicate files hotfix (https://github.com/Darakah/obsidian-gallery/issues/6)
 
 ### v0.5.1
 - Add reverse main gallery display option to Obsidian settings
