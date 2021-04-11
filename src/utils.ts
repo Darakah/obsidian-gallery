@@ -135,7 +135,7 @@ ${imgPath}
  * @param plugin - Gallery plugin handler
  */
 
-export const getImgInfo = async (imgPath: string, vault: Vault, metadata: MetadataCache, plugin: GalleryPlugin): Promise<TFile> => {
+export const getImgInfo = async (imgPath: string, vault: Vault, metadata: MetadataCache, plugin: GalleryPlugin, create: boolean): Promise<TFile> => {
 
     let infoFile = null;
     let infoFolder = vault.getAbstractFileByPath(plugin.settings.imgDataFolder);
@@ -150,7 +150,7 @@ export const getImgInfo = async (imgPath: string, vault: Vault, metadata: Metada
             }
         });
 
-        if (!infoFile) {
+        if (!infoFile && create) {
             // Info File does not exist, Create it
             plugin.settings.imgPrefix++;
             await plugin.saveSettings();

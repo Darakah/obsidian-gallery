@@ -292,7 +292,8 @@ export class GalleryInfoView extends ItemView {
         this.infoFile = await getImgInfo(this.galleryView.imgResources[this.imgPath],
             this.app.vault,
             this.app.metadataCache,
-            this.plugin);
+            this.plugin,
+            true);
 
         // Handle disabled img info functionality or missing info block
         let infoText = GALLERY_RESOURCES_MISSING;
