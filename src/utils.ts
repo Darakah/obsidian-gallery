@@ -46,7 +46,9 @@ export const EXTRACT_COLORS_OPTIONS = {
     colorValidator: (red, green, blue, alpha = 255) => alpha > 250
 };
 
-export const EXTENSIONS = ['png', 'jpg', 'jpeg'];
+export const EXTENSIONS = ['png', 'jpg', 'jpeg', 'mp4'];
+
+export const VIDEO_REGEX = new RegExp(".*\\.mp4\\?\\d*$");
 
 export const OB_GALLERY = "ob-gallery";
 
@@ -194,3 +196,26 @@ export const getImageResources = (path: string, name: string, vaultFiles: TFile[
     }
     return imgList;
 };
+
+export const updateFocus = (imgEl: HTMLImageElement, videoEl: HTMLVideoElement, src: string, isVideo: boolean): void => {
+    if (isVideo) {
+        // hide focus image div
+        imgEl.style.setProperty('display', 'none');
+        // Show focus video div
+        videoEl.style.setProperty('display', 'block');
+        // Clear Focus image
+        imgEl.src = "";
+        // Set focus video
+        videoEl.src = src;
+        return;
+    }
+
+    // Show focus image div
+    imgEl.style.setProperty('display', 'block');
+    // Hide focus video div
+    videoEl.style.setProperty('display', 'none');
+    // Clear Focus video
+    videoEl.src = "";
+    // Set focus image
+    imgEl.src = src;
+}

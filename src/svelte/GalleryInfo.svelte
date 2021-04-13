@@ -7,6 +7,18 @@
     export let date;
     export let tagList;
     export let colorList;
+    export let isVideo;
+
+    let width, height;
+
+    dimensions.addEventListener(
+        "loadedmetadata",
+        function (e) {
+            width = this.videoWidth;
+            height = this.videoHeight;
+        },
+        false
+    );
 </script>
 
 <div class="gallery-info-container">
@@ -31,7 +43,11 @@
     <div class="gallery-info-section">
         <span class="gallery-info-section-label">Dimensions</span>
         <div class="gallery-info-section-value">
-            {dimensions?.naturalWidth} x {dimensions?.naturalHeight} px
+            {#if isVideo}
+                {width} x {height} px
+            {:else}
+                {dimensions?.naturalWidth} x {dimensions?.naturalHeight} px
+            {/if}
         </div>
     </div>
     <div class="gallery-info-section">

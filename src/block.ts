@@ -1,7 +1,12 @@
 import type { Vault, MetadataCache, WorkspaceLeaf } from 'obsidian';
 import { MarkdownRenderer, TFile, getAllTags } from 'obsidian';
 import type { GalleryBlockArgs } from './utils';
-import { EXTENSIONS, GALLERY_DISPLAY_USAGE, GALLERY_INFO_USAGE, EXTRACT_COLORS_OPTIONS, getImageResources, getImgInfo } from './utils';
+import {
+	EXTENSIONS, GALLERY_DISPLAY_USAGE, GALLERY_INFO_USAGE, EXTRACT_COLORS_OPTIONS,
+	VIDEO_REGEX, 
+	getImageResources,
+	getImgInfo, updateFocus
+} from './utils';
 import { extractColors } from 'extract-colors';
 import type GalleryPlugin from './main';
 import ImageGrid from './svelte/ImageGrid.svelte';
@@ -62,7 +67,9 @@ export class GalleryProcessor {
 			});
 
 			let imageFocusEl = elCanvas.createDiv({ cls: 'ob-gallery-image-focus' });
-			let focusImage = imageFocusEl.createEl('img');
+			let focusImage = imageFocusEl.createEl('img', { attr: { style: 'display: none;' } });
+			let focusVideo = imageFocusEl.createEl('video', { attr: { controls: "controls", src: " ", style: 'display: none; margin: auto;' } });
+			let pausedVideo, pausedVideoUrl;
 			let imgFocusIndex = 0;
 
 			elCanvas.onClickEvent((event) => {
@@ -70,21 +77,45 @@ export class GalleryProcessor {
 				let currentMode = imageFocusEl.style.getPropertyValue('display');
 				if (currentMode == "block") {
 					imageFocusEl.style.setProperty('display', 'none');
+					// Clear Focus video
+					focusVideo.src = "";
+					// Clear Focus image
+					focusImage.src = "";
+					// Set Video Url back to disabled grid video
+					if (pausedVideo) {
+						pausedVideo.src = pausedVideoUrl;
+					}
+					// Hide focus image div
+					focusImage.style.setProperty('display', 'none');
+					// Hide focus video div
+					focusVideo.style.setProperty('display', 'none');
 					return;
 				}
-				imageFocusEl.style.setProperty('display', 'block');
 
 				if (event.target instanceof HTMLImageElement) {
 					// Read New image info
 					let imgPath = event.target.src;
 					imgFocusIndex = imgList.indexOf(imgPath);
 					imageFocusEl.style.setProperty('display', 'block');
-					focusImage.src = imgList[imgFocusIndex];
+					updateFocus(focusImage, focusVideo, imgList[imgFocusIndex], false);
+				}
+
+				if (event.target instanceof HTMLVideoElement) {
+					// Read video info
+					let imgPath = event.target.src;
+					imgFocusIndex = imgList.indexOf(imgPath);
+					imageFocusEl.style.setProperty('display', 'block');
+					// Save clicked video info to set it back later
+					pausedVideo = event.target;
+					pausedVideoUrl = pausedVideo.src;
+					// disable clicked video
+					pausedVideo.src = "";
+					updateFocus(focusImage, focusVideo, imgList[imgFocusIndex], true);
 				}
 			});
 
 			elCanvas.addEventListener('contextmenu', async (e) => {
-				if (e.target instanceof HTMLImageElement) {
+				if (e.target instanceof HTMLImageElement || e.target instanceof HTMLVideoElement) {
 					// Open image file
 					let file = vault.getAbstractFileByPath(imgResources[e.target.src]);
 					if (file instanceof TFile) {
@@ -104,14 +135,22 @@ export class GalleryProcessor {
 						if (imgFocusIndex < 0) {
 							imgFocusIndex = imgList.length - 1;
 						}
-						focusImage.src = imgList[imgFocusIndex];
+						if (imgList[imgFocusIndex].match(VIDEO_REGEX)) {
+							updateFocus(focusImage, focusVideo, imgList[imgFocusIndex], true);
+						} else {
+							updateFocus(focusImage, focusVideo, imgList[imgFocusIndex], false);
+						}
 						break;
 					case "ArrowRight":
 						imgFocusIndex++;
 						if (imgFocusIndex >= imgList.length) {
 							imgFocusIndex = 0;
 						}
-						focusImage.src = imgList[imgFocusIndex];
+						if (imgList[imgFocusIndex].match(VIDEO_REGEX)) {
+							updateFocus(focusImage, focusVideo, imgList[imgFocusIndex], true);
+						} else {
+							updateFocus(focusImage, focusVideo, imgList[imgFocusIndex], false);
+						}
 						break;
 				}
 			}, false);
@@ -147,9 +186,18 @@ export class GalleryProcessor {
 			return;
 		}
 
+		let measureEl, colors, isVideo;
 		// Get image dimensions
-		let imgEl = new Image();
-		imgEl.src = imgURL;
+		if (imgURL.match(VIDEO_REGEX)) {
+			measureEl = document.createElement('video');
+			isVideo = true;
+		} else {
+			measureEl = new Image();
+			colors = await extractColors(imgURL, EXTRACT_COLORS_OPTIONS);
+			isVideo = false;
+		}
+
+		measureEl.src = imgURL;
 
 		// Handle disabled img info functionality or missing info block
 		let imgInfo = await getImgInfo(imgTFile.path, vault, metadata, plugin, false);
@@ -165,10 +213,11 @@ export class GalleryProcessor {
 					path: imgTFile.path,
 					extension: imgTFile.extension,
 					date: new Date(imgTFile.stat.ctime),
-					dimensions: imgEl,
+					dimensions: measureEl,
 					size: imgTFile.stat.size / 1000000,
-					colorList: await extractColors(imgURL, EXTRACT_COLORS_OPTIONS),
-					tagList: imgTags
+					colorList: colors,
+					tagList: imgTags,
+					isVideo: isVideo
 				},
 				target: elCanvas
 			});

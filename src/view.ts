@@ -1,6 +1,9 @@
 import { ItemView, WorkspaceLeaf, setIcon, MarkdownRenderer, TFile, debounce } from 'obsidian';
 import type { ImageResources } from './utils';
-import { OB_GALLERY, OB_GALLERY_INFO, GALLERY_RESOURCES_MISSING, gallerySearchIcon, getImageResources, getImgInfo } from './utils';
+import {
+    OB_GALLERY, OB_GALLERY_INFO, GALLERY_RESOURCES_MISSING, VIDEO_REGEX,
+    gallerySearchIcon, getImageResources, getImgInfo, updateFocus
+} from './utils';
 import * as CodeMirror from 'codemirror';
 import ImageGrid from './svelte/ImageGrid.svelte';
 import type GalleryPlugin from './main';
@@ -14,10 +17,14 @@ export class GalleryView extends ItemView {
     filterEl: HTMLElement;
     imageFocusEl: HTMLElement;
     focusImage: HTMLImageElement;
+    focusVideo: HTMLVideoElement;
     imagesContainer: HTMLUListElement;
     imgList: string[];
     imgResources: ImageResources;
     imgFocusIndex: number;
+    pausedVideo: HTMLVideoElement;
+    pausedVideoUrl: string;
+
 
     constructor(leaf: WorkspaceLeaf, plugin: GalleryPlugin) {
         super(leaf);
@@ -48,8 +55,11 @@ export class GalleryView extends ItemView {
         this.displayEl = this.viewEl.createDiv({ cls: 'ob-gallery-display' });
         this.imagesContainer = this.displayEl.createEl('ul');
         this.updateDisplay(this.plugin.settings.galleryLoadPath, '');
+
         this.imageFocusEl = this.displayEl.createDiv({ cls: 'ob-gallery-image-focus', attr: { 'style': 'display: none;' } });
-        this.focusImage = this.imageFocusEl.createEl('img');
+        this.focusImage = this.imageFocusEl.createEl('img', { attr: { style: 'display: none;' } });
+        this.focusVideo = this.imageFocusEl.createEl('video', { attr: { controls: "controls", src: " ", style: 'display: none; margin:auto;' } });
+        this.imgFocusIndex = 0;
 
         // Filter by path
         let pathFilterEl = this.filterEl.createEl('input', {
@@ -83,10 +93,10 @@ export class GalleryView extends ItemView {
 
         this.imgList = Object.keys(this.imgResources);
 
-        if(this.plugin.settings.reverseDisplay){
+        if (this.plugin.settings.reverseDisplay) {
             this.imgList = this.imgList.reverse();
         }
-        
+
         new ImageGrid({
             props: {
                 imageList: this.imgList,
@@ -180,18 +190,61 @@ export class GalleryInfoView extends ItemView {
             let displayEl = this.galleryView.displayEl;
 
             displayEl.onclick = async (evt) => {
+
+                let currentMode = this.galleryView.imageFocusEl.style.getPropertyValue('display');
+                if (currentMode == "block") {
+                    // Save file content
+                    await this.saveFile();
+                    this.galleryView.imageFocusEl.style.setProperty('display', 'none');
+                    // Clear Focus video
+                    this.galleryView.focusVideo.src = "";
+                    // Clear Focus image
+                    this.galleryView.focusImage.src = "";
+                    // Set Video Url back to disabled grid video
+                    if (this.galleryView.pausedVideo) {
+                        this.galleryView.pausedVideo.src = this.galleryView.pausedVideoUrl;
+                    }
+                    // Hide focus image div
+                    this.galleryView.focusImage.style.setProperty('display', 'none');
+                    // Hide focus video div
+                    this.galleryView.focusVideo.style.setProperty('display', 'none');
+                    return;
+                }
+
                 if (evt.target instanceof HTMLImageElement) {
                     // Save file content
                     await this.saveFile();
-
                     // Read New image info
                     this.imgPath = evt.target.src;
+                    this.galleryView.imgFocusIndex = this.galleryView.imgList.indexOf(this.imgPath);
+                    this.galleryView.imageFocusEl.style.setProperty('display', 'block');
+                    updateFocus(this.galleryView.focusImage, this.galleryView.focusVideo,
+                        this.galleryView.imgList[this.galleryView.imgFocusIndex], false);
+
+                    await this.updateInfoDisplay();
+                }
+
+                if (evt.target instanceof HTMLVideoElement) {
+                    // Save file content
+                    await this.saveFile();
+                    // Read video info
+                    this.imgPath = evt.target.src;
+                    this.galleryView.imgFocusIndex = this.galleryView.imgList.indexOf(this.imgPath);
+                    this.galleryView.imageFocusEl.style.setProperty('display', 'block');
+                    // Save clicked video info to set it back later
+                    this.galleryView.pausedVideo = evt.target;
+                    this.galleryView.pausedVideoUrl = this.galleryView.pausedVideo.src;
+                    // disable clicked video
+                    this.galleryView.pausedVideo.src = "";
+                    updateFocus(this.galleryView.focusImage, this.galleryView.focusVideo,
+                        this.galleryView.imgList[this.galleryView.imgFocusIndex], true);
+
                     await this.updateInfoDisplay();
                 }
             };
 
             displayEl.addEventListener('contextmenu', async (e) => {
-                if (e.target instanceof HTMLImageElement) {
+                if (e.target instanceof HTMLImageElement || e.target instanceof HTMLVideoElement) {
                     // Save file content
                     this.saveFile();
 
@@ -203,21 +256,6 @@ export class GalleryInfoView extends ItemView {
                     if (file instanceof TFile) {
                         this.app.workspace.getUnpinnedLeaf().openFile(file);
                     }
-                }
-            });
-
-            this.galleryView.imageFocusEl.onClickEvent(async (event) => {
-                event.stopPropagation();
-                if (event.target instanceof HTMLImageElement) {
-                    let currentMode = this.galleryView.imageFocusEl.style.getPropertyValue('display');
-                    if (currentMode == "block") {
-                        // save file
-                        await this.saveFile();
-
-                        this.galleryView.imageFocusEl.style.setProperty('display', 'none');
-                        return;
-                    }
-                    this.galleryView.imageFocusEl.style.setProperty('display', 'block');
                 }
             });
 
@@ -236,11 +274,25 @@ export class GalleryInfoView extends ItemView {
                         if (this.galleryView.imgFocusIndex < 0) {
                             this.galleryView.imgFocusIndex = this.galleryView.imgList.length - 1;
                         }
+                        if (this.galleryView.imgList[this.galleryView.imgFocusIndex].match(VIDEO_REGEX)) {
+                            updateFocus(this.galleryView.focusImage, this.galleryView.focusVideo,
+                                this.galleryView.imgList[this.galleryView.imgFocusIndex], true);
+                        } else {
+                            updateFocus(this.galleryView.focusImage, this.galleryView.focusVideo,
+                                this.galleryView.imgList[this.galleryView.imgFocusIndex], false);
+                        }
                         break;
                     case "ArrowRight":
                         this.galleryView.imgFocusIndex++;
                         if (this.galleryView.imgFocusIndex >= this.galleryView.imgList.length) {
                             this.galleryView.imgFocusIndex = 0;
+                        }
+                        if (this.galleryView.imgList[this.galleryView.imgFocusIndex].match(VIDEO_REGEX)) {
+                            updateFocus(this.galleryView.focusImage, this.galleryView.focusVideo,
+                                this.galleryView.imgList[this.galleryView.imgFocusIndex], true);
+                        } else {
+                            updateFocus(this.galleryView.focusImage, this.galleryView.focusVideo,
+                                this.galleryView.imgList[this.galleryView.imgFocusIndex], false);
                         }
                         break;
                 }
@@ -285,10 +337,6 @@ export class GalleryInfoView extends ItemView {
     }
 
     async updateInfoDisplay() {
-        this.galleryView.imgFocusIndex = this.galleryView.imgList.indexOf(this.imgPath);
-        this.galleryView.imageFocusEl.style.setProperty('display', 'block');
-        this.galleryView.focusImage.src = this.galleryView.imgList[this.galleryView.imgFocusIndex];
-
         this.infoFile = await getImgInfo(this.galleryView.imgResources[this.imgPath],
             this.app.vault,
             this.app.metadataCache,
