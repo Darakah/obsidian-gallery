@@ -56,6 +56,10 @@ Argument Info:
 
 ## Release Notes:
 
+### v0.5.3
+- Support for mp4 videos
+- Code cleanup
+
 ### v0.5.2
 - Duplicate files hotfix (https://github.com/Darakah/obsidian-gallery/issues/6)
 
