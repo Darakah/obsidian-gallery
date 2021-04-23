@@ -56,6 +56,16 @@ Argument Info:
 
 ## Release Notes:
 
+### v0.5.7
+- `gallery-info` block modified to take arguments `imgPath` and `ignoreInfo`
+- `gallery-info` will show all default information + all YAML added to the info MD file. Can ignore any info field by specifying `ignoreInfo` separated by a `;`
+- Right-clicking an info block will open the info side panel
+- Button to open info file from image info side panel
+- Changed info file naming to use same name as img (if already present will apend a counter)
+- Comeback now opens the side panel activating the gallery as normal
+- Renaming files bug fix
+- Bug Fix: https://github.com/Darakah/obsidian-gallery/issues/8
+
 ### v0.5.3
 - Support for mp4 videos
 - Code cleanup
