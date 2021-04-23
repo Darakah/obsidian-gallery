@@ -72,19 +72,5 @@ export default class GalleryPlugin extends Plugin {
 		if (leftCollapseButton.ariaLabel === "Collapse") {
 			leftCollapseButton.click();
 		}
-
-		workspace.detachLeavesOfType(OB_GALLERY_INFO);
-		let infoView = workspace.getLeavesOfType(OB_GALLERY_INFO)[0];
-		if (infoView) {
-			workspace.revealLeaf(
-				infoView,
-			);
-			return;
-		}
-
-		await workspace.getRightLeaf().setViewState({ type: OB_GALLERY_INFO });
-		workspace.revealLeaf(
-			await workspace.getLeavesOfType(OB_GALLERY_INFO)[0]
-		);
 	};
 }

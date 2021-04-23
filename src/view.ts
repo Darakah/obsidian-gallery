@@ -119,6 +119,8 @@ export class GalleryView extends ItemView {
     }
 
     onClose(): Promise<void> {
+        // Hide focus elements
+        this.imageFocusEl.style.setProperty('display', 'none');
         this.app.workspace.detachLeavesOfType(OB_GALLERY_INFO);
         return Promise.resolve();
     }
@@ -128,6 +130,25 @@ export class GalleryView extends ItemView {
         this.headerEl.querySelector('.view-header-title').setText('Obsidian Gallery');
         // Set Header Icon
         this.headerEl.querySelector('svg').outerHTML = gallerySearchIcon;
+        // Open Info panel
+        let workspace = this.app.workspace;
+        workspace.detachLeavesOfType(OB_GALLERY_INFO);
+        let infoView = workspace.getLeavesOfType(OB_GALLERY_INFO)[0];
+        if (infoView) {
+            workspace.revealLeaf(
+                infoView,
+            );
+            return;
+        }
+
+        if (!workspace.layoutReady) {
+            return;
+        }
+
+        await workspace.getRightLeaf(false).setViewState({ type: OB_GALLERY_INFO });
+        workspace.revealLeaf(
+            await workspace.getLeavesOfType(OB_GALLERY_INFO)[0]
+        );
     }
 }
 
@@ -185,7 +206,7 @@ export class GalleryInfoView extends ItemView {
     onload(): void {
         // Add listener to change active file
         let gallery = this.app.workspace.getLeavesOfType(OB_GALLERY)[0];
-        if (gallery.view instanceof GalleryView) {
+        if (gallery?.view instanceof GalleryView) {
             this.galleryView = gallery.view;
             let displayEl = this.galleryView.displayEl;
 
@@ -260,7 +281,7 @@ export class GalleryInfoView extends ItemView {
             });
 
             document.addEventListener('keyup', async (event) => {
-                if (this.galleryView.imageFocusEl.style.getPropertyValue('display') == "none") {
+                if (this.galleryView.imageFocusEl.style.getPropertyValue('display') != "block") {
                     return;
                 }
 
@@ -296,7 +317,6 @@ export class GalleryInfoView extends ItemView {
                         }
                         break;
                 }
-
                 // Save file content
                 await this.saveFile();
 
@@ -316,6 +336,12 @@ export class GalleryInfoView extends ItemView {
             });
         setIcon(changeMode, 'pencil', 17);
 
+        let openInfo = this.viewEl.createEl('a',
+            {
+                cls: 'fa fa-external-link view-action image-info-open',
+                attr: { 'aria-label': 'Open Info', 'style': 'float: right; padding-top: 10px; color: var(--text-normal);' }
+            });
+
         changeMode.onClickEvent(() => {
             let currentMode = this.previewEl.style.getPropertyValue('display');
             if (currentMode == "block") {
@@ -328,6 +354,13 @@ export class GalleryInfoView extends ItemView {
             this.render();
             this.previewEl.style.setProperty('display', 'block');
             this.sourceEl.style.setProperty('display', 'none');
+        });
+
+        openInfo.onClickEvent(() => {
+            // Set workspace leaf to info file
+            if (this.infoFile) {
+                this.app.workspace.getUnpinnedLeaf().openFile(this.infoFile);
+            }
         });
 
         // Save file on change
@@ -369,7 +402,11 @@ export class GalleryInfoView extends ItemView {
     async saveFile(): Promise<void> {
         // Save file content
         if (this.infoFile) {
-            await this.app.vault.adapter.write(this.infoFile.path, this.editor.getValue());
+            if (this.editor.getValue().trim()) {
+                if (this.app.vault.getAbstractFileByPath(this.infoFile.path)) {
+                    await this.app.vault.adapter.write(this.infoFile.path, this.editor.getValue());
+                }
+            }
         }
     }
 

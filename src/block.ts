@@ -1,12 +1,13 @@
 import type { Vault, MetadataCache, WorkspaceLeaf } from 'obsidian';
 import { MarkdownRenderer, TFile, getAllTags } from 'obsidian';
-import type { GalleryBlockArgs } from './utils';
+import type { GalleryBlockArgs, InfoBlockArgs } from './utils';
 import {
-	EXTENSIONS, GALLERY_DISPLAY_USAGE, GALLERY_INFO_USAGE, EXTRACT_COLORS_OPTIONS,
-	VIDEO_REGEX, 
+	EXTENSIONS, GALLERY_DISPLAY_USAGE, GALLERY_INFO_USAGE, EXTRACT_COLORS_OPTIONS, OB_GALLERY_INFO,
+	VIDEO_REGEX,
 	getImageResources,
 	getImgInfo, updateFocus
 } from './utils';
+import { GalleryInfoView } from './view';
 import { extractColors } from 'extract-colors';
 import type GalleryPlugin from './main';
 import ImageGrid from './svelte/ImageGrid.svelte';
@@ -125,7 +126,7 @@ export class GalleryProcessor {
 			});
 
 			document.addEventListener('keyup', (event) => {
-				if (imageFocusEl.style.getPropertyValue('display') == "none") {
+				if (imageFocusEl.style.getPropertyValue('display') != "block") {
 					return;
 				}
 
@@ -171,17 +172,30 @@ export class GalleryProcessor {
 
 	async galleryImageInfo(source: string, el: HTMLElement, vault: Vault, metadata: MetadataCache, plugin: GalleryPlugin) {
 
-		let imgPath = source.trim();
+		let args: InfoBlockArgs = {
+			imgPath: '',
+			ignoreInfo: ''
+		};
+
+		source.split('\n').map(e => {
+			if (e) {
+				let param = e.trim().split('=');
+				(args as any)[param[0]] = param[1]?.trim();
+			}
+		});
+
+		let infoList = args.ignoreInfo.split(';').map(param => param.trim().toLowerCase()).filter(e => e !== "");
+		let imgName = args.imgPath.split('/').slice(-1)[0];
 		let elCanvas = el.createDiv({
 			cls: 'ob-gallery-info-block',
 			attr: { 'style': `width: 100%; height: auto; float: left` }
 		});
 
-		let imgTFile = vault.getAbstractFileByPath(imgPath);
-		let imgURL = vault.adapter.getResourcePath(imgPath);
+		let imgTFile = vault.getAbstractFileByPath(args.imgPath);
+		let imgURL = vault.adapter.getResourcePath(args.imgPath);
 
 		// Handle problematic arg
-		if (!imgPath || !imgTFile) {
+		if (!args.imgPath || !imgTFile) {
 			MarkdownRenderer.renderMarkdown(GALLERY_INFO_USAGE, elCanvas, '/', plugin);
 			return;
 		}
@@ -202,9 +216,25 @@ export class GalleryProcessor {
 		// Handle disabled img info functionality or missing info block
 		let imgInfo = await getImgInfo(imgTFile.path, vault, metadata, plugin, false);
 		let imgTags = null;
-		if (imgInfo) {
-			imgTags = getAllTags(metadata.getFileCache(imgInfo));
+
+		if (!imgInfo) {
+			MarkdownRenderer.renderMarkdown(GALLERY_INFO_USAGE, elCanvas, '/', plugin);
+			return;
 		}
+
+		let imgInfoCache = metadata.getFileCache(imgInfo);
+		if (imgInfo) {
+			imgTags = getAllTags(imgInfoCache);
+		}
+
+		let imgLinks = [];
+		vault.getMarkdownFiles().forEach(mdFile => {
+			metadata.getFileCache(mdFile)?.links?.forEach(link => {
+				if (link.link === args.imgPath || link.link === imgName) {
+					imgLinks.push({path: mdFile.path, name: mdFile.basename});
+				}
+			});
+		});
 
 		if (imgTFile instanceof TFile && EXTENSIONS.contains(imgTFile.extension)) {
 			new GalleryInfo({
@@ -217,10 +247,31 @@ export class GalleryProcessor {
 					size: imgTFile.stat.size / 1000000,
 					colorList: colors,
 					tagList: imgTags,
-					isVideo: isVideo
+					isVideo: isVideo,
+					imgLinks: imgLinks,
+					frontmatter: imgInfoCache.frontmatter,
+					infoList: infoList
 				},
 				target: elCanvas
 			});
 		}
+
+		elCanvas.onClickEvent(async (event) => {
+			if (event.button === 2) {
+				// Open image info view in side panel
+				let workspace = plugin.app.workspace;
+				workspace.detachLeavesOfType(OB_GALLERY_INFO);
+				await workspace.getRightLeaf(false).setViewState({ type: OB_GALLERY_INFO });
+				workspace.revealLeaf(
+					await workspace.getLeavesOfType(OB_GALLERY_INFO)[0]
+				);
+				let infoView = workspace.getLeavesOfType(OB_GALLERY_INFO)[0]?.view;
+				if (infoView instanceof GalleryInfoView) {
+					infoView.infoFile = imgInfo;
+					infoView.editor.setValue(await vault.cachedRead(imgInfo));
+					infoView.render();
+				}
+			}
+		});
 	}
 }

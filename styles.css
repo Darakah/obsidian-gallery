@@ -63,6 +63,17 @@
     color: var(--text-a) !important;
 }
 
+.image-info-open {
+    position: fixed;
+    right: 30px;
+    top: 5px;
+    color: var(--text-normal) !important;
+}
+
+.image-info-open:hover {
+    color: var(--text-a) !important;
+}
+
 .gallery-span-info {
     display: none;
 }

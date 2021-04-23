@@ -8,6 +8,9 @@
     export let tagList;
     export let colorList;
     export let isVideo;
+    export let imgLinks;
+    export let frontmatter;
+    export let infoList;
 
     let width, height;
 
@@ -22,66 +25,104 @@
 </script>
 
 <div class="gallery-info-container">
-    <div class="gallery-info-section">
-        <span class="gallery-info-section-label">Name</span>
-        <div class="gallery-info-section-value">{name}</div>
-    </div>
-    <div class="gallery-info-section">
-        <span class="gallery-info-section-label">Path</span>
-        <div class="gallery-info-section-value">
-            {path}
+    {#if !infoList.contains("name")}
+        <div class="gallery-info-section">
+            <span class="gallery-info-section-label">Name</span>
+            <div class="gallery-info-section-value">{name}</div>
         </div>
-    </div>
-    <div class="gallery-info-section">
-        <span class="gallery-info-section-label">Extension</span>
-        <div class="gallery-info-section-value">{extension}</div>
-    </div>
-    <div class="gallery-info-section">
-        <span class="gallery-info-section-label">Size</span>
-        <div class="gallery-info-section-value">{size} Mb</div>
-    </div>
-    <div class="gallery-info-section">
-        <span class="gallery-info-section-label">Dimensions</span>
-        <div class="gallery-info-section-value">
-            {#if isVideo}
-                {width} x {height} px
-            {:else}
-                {dimensions?.naturalWidth} x {dimensions?.naturalHeight} px
-            {/if}
+    {/if}
+    {#if !infoList.contains("path")}
+        <div class="gallery-info-section">
+            <span class="gallery-info-section-label">Path</span>
+            <div class="gallery-info-section-value">
+                {path}
+            </div>
         </div>
-    </div>
-    <div class="gallery-info-section">
-        <span class="gallery-info-section-label">Date</span>
-        <div class="gallery-info-section-value">{date}</div>
-    </div>
-    <div class="gallery-info-section mod-tags">
-        <span class="gallery-info-section-label">Tags</span>
-        <div class="gallery-info-section-tags">
-            {#if tagList}
-                {#each tagList as tag}
-                    <a class="tag" target="_blank" rel="noopener" href={tag}
-                        >{tag}</a
-                    >
-                {/each}
-            {/if}
+    {/if}
+    {#if !infoList.contains("extension")}
+        <div class="gallery-info-section">
+            <span class="gallery-info-section-label">Extension</span>
+            <div class="gallery-info-section-value">{extension}</div>
         </div>
-    </div>
-    <div class="gallery-info-section mod-tags">
-        <span class="gallery-info-section-label">Palette</span>
-        <div class="gallery-info-section-value">
-            <div width="max-content">
-                {#if colorList}
-                    {#each colorList as color}
-                        <div
-                            class="gallery-info-color"
-                            aria-label={color.hex}
-                            style="background-color:{color.hex}"
-                        />
+    {/if}
+    {#if !infoList.contains("size")}
+        <div class="gallery-info-section">
+            <span class="gallery-info-section-label">Size</span>
+            <div class="gallery-info-section-value">{size} Mb</div>
+        </div>
+    {/if}
+    {#if !infoList.contains("dimension")}
+        <div class="gallery-info-section">
+            <span class="gallery-info-section-label">Dimensions</span>
+            <div class="gallery-info-section-value">
+                {#if isVideo}
+                    {width} x {height} px
+                {:else}
+                    {dimensions?.naturalWidth} x {dimensions?.naturalHeight} px
+                {/if}
+            </div>
+        </div>
+    {/if}
+    {#if !infoList.contains("date")}
+        <div class="gallery-info-section">
+            <span class="gallery-info-section-label">Date</span>
+            <div class="gallery-info-section-value">{date}</div>
+        </div>
+    {/if}
+    {#if !infoList.contains("tags")}
+        <div class="gallery-info-section mod-tags">
+            <span class="gallery-info-section-label">Tags</span>
+            <div class="gallery-info-section-tags">
+                {#if tagList}
+                    {#each tagList as tag}
+                        <a class="tag" target="_blank" rel="noopener" href={tag}
+                            >{tag}</a
+                        >
                     {/each}
                 {/if}
             </div>
         </div>
-    </div>
+    {/if}
+    {#if !infoList.contains("backlinks")}
+        <div class="gallery-info-section">
+            <span class="gallery-info-section-label">Backlinks</span>
+            <div class="gallery-info-section-value">
+                {#each imgLinks as link}
+                    <li class="img-info-link">
+                        <a class="internal-link" href={link.path}>{link.name}</a>
+                    </li>
+                {/each}
+            </div>
+        </div>
+    {/if}
+    {#each Object.keys(frontmatter) as yaml}
+        {#if yaml != "position" && !infoList.contains(yaml)}
+            <div class="gallery-info-section">
+                <span class="gallery-info-section-label">{yaml}</span>
+                <div class="gallery-info-section-value">
+                    {frontmatter[yaml]}
+                </div>
+            </div>
+        {/if}
+    {/each}
+    {#if !infoList.contains("palette")}
+        <div class="gallery-info-section mod-tags">
+            <span class="gallery-info-section-label">Palette</span>
+            <div class="gallery-info-section-value">
+                <div width="max-content">
+                    {#if colorList}
+                        {#each colorList as color}
+                            <div
+                                class="gallery-info-color"
+                                aria-label={color.hex}
+                                style="background-color:{color.hex}"
+                            />
+                        {/each}
+                    {/if}
+                </div>
+            </div>
+        </div>
+    {/if}
 </div>
 
 <style>
@@ -138,5 +179,9 @@
         margin: 0px 0px;
         cursor: pointer;
         border-radius: 14px;
+    }
+
+    .img-info-link {
+        color: var(--text-muted);
     }
 </style>

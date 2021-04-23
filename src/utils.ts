@@ -30,6 +30,11 @@ export interface GalleryBlockArgs {
     customList: string;
 }
 
+export interface InfoBlockArgs {
+    imgPath: string,
+    ignoreInfo: string
+}
+
 export const SETTINGS: GallerySettings = {
     imgDataFolder: null,
     galleryLoadPath: "/",
@@ -120,8 +125,8 @@ Please make sure that a Valid Folder is specified in the settings for the plugin
  * Return initial img info file content
  * @param imgPath - Relative vault path of related image
  */
-const initializeInfo = (imgPath: string): string => {
-    return `<span class='gallery-span-info'> [[${imgPath}]] </span>\n
+const initializeInfo = (imgPath: string, imgName: string): string => {
+    return `<span class='gallery-span-info'> [[${imgName}]] </span>\n
 %% Place Tags Here %%
 \`\`\`gallery-info
 ${imgPath}
@@ -140,12 +145,15 @@ ${imgPath}
 export const getImgInfo = async (imgPath: string, vault: Vault, metadata: MetadataCache, plugin: GalleryPlugin, create: boolean): Promise<TFile> => {
 
     let infoFile = null;
+    let imgName = imgPath.split('/').slice(-1)[0];
     let infoFolder = vault.getAbstractFileByPath(plugin.settings.imgDataFolder);
+    let infoFileList = [];
     if (infoFolder instanceof TFolder) {
         infoFolder.children?.forEach(info => {
             if (info instanceof TFile) {
+                infoFileList.push(info.basename);
                 metadata.getFileCache(info)?.links?.forEach(link => {
-                    if (link.link === imgPath) {
+                    if (link.link === imgName || link.link === imgPath) {
                         infoFile = info;
                     }
                 });
@@ -156,9 +164,15 @@ export const getImgInfo = async (imgPath: string, vault: Vault, metadata: Metada
             // Info File does not exist, Create it
             plugin.settings.imgPrefix++;
             await plugin.saveSettings();
-            let fileName = `${plugin.settings.imgDataFolder}/Img_${plugin.settings.imgPrefix}.md`;
-            await vault.adapter.write(fileName, initializeInfo(imgPath));
-            infoFile = (vault.getAbstractFileByPath(fileName) as TFile);
+            let counter = 1;
+            let fileName = imgName.split('\.')[0];
+            while(infoFileList.contains(fileName)){
+                fileName = `${fileName}_${counter}`;
+                counter++;
+            }
+
+            await vault.adapter.write(`${plugin.settings.imgDataFolder}/${fileName}.md`, initializeInfo(imgPath, imgName));
+            infoFile = (vault.getAbstractFileByPath(`${plugin.settings.imgDataFolder}/${fileName}.md`) as TFile);
         }
         return infoFile;
     }
@@ -218,4 +232,4 @@ export const updateFocus = (imgEl: HTMLImageElement, videoEl: HTMLVideoElement, 
     videoEl.src = "";
     // Set focus image
     imgEl.src = src;
-}
+};
