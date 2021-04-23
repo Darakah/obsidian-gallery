@@ -5,7 +5,6 @@ import type GalleryPlugin from './main';
 export interface GallerySettings {
     imgDataFolder: string,
     galleryLoadPath: string,
-    imgPrefix: number,
     width: number;
     reverseDisplay: boolean;
 }
@@ -38,7 +37,6 @@ export interface InfoBlockArgs {
 export const SETTINGS: GallerySettings = {
     imgDataFolder: null,
     galleryLoadPath: "/",
-    imgPrefix: 0,
     width: 400,
     reverseDisplay: true
 };
@@ -162,7 +160,6 @@ export const getImgInfo = async (imgPath: string, vault: Vault, metadata: Metada
 
         if (!infoFile && create) {
             // Info File does not exist, Create it
-            plugin.settings.imgPrefix++;
             await plugin.saveSettings();
             let counter = 1;
             let fileName = imgName.split('\.')[0];
