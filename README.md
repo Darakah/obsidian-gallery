@@ -56,6 +56,9 @@ Argument Info:
 
 ## Release Notes:
 
+### v0.5.8
+- Bug Fix: https://github.com/Darakah/obsidian-gallery/issues/12
+
 ### v0.5.7
 - `gallery-info` block modified to take arguments `imgPath` and `ignoreInfo`
 - `gallery-info` will show all default information + all YAML added to the info MD file. Can ignore any info field by specifying `ignoreInfo` separated by a `;`
