@@ -95,7 +95,8 @@ export const GALLERY_INFO_USAGE = `
 e.g. Input:
 
 \`\`\`
-Resources/Images/Image_example_1.png
+imgPath=Resources/Images/Image_example_1.png
+infoList=Name;tags;size;backlinks
 \`\`\`
 
 ----
@@ -127,7 +128,7 @@ const initializeInfo = (imgPath: string, imgName: string): string => {
     return `<span class='gallery-span-info'> [[${imgName}]] </span>\n
 %% Place Tags Here %%
 \`\`\`gallery-info
-${imgPath}
+imgPath=${imgPath}
 \`\`\`
 `;
 };
