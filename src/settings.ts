@@ -72,7 +72,7 @@ export class GallerySettingTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName('Gallery On Open Path Search')
             .setDesc(`The path from which to show images when the main gallery is opened. 
-            Setting it to \`/\` will show all iamges in the vault. 
+            Setting it to \`/\` will show all images in the vault. 
             Can be used to avoid the loading all images and affecting on open performance 
             (especially if vault has a huge amount of high quality images). 
             Setting it to an invalid path to have no images shown when gallery is opened.`)
