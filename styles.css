@@ -111,6 +111,7 @@
     /* opacity: 1;
     transform: scale(1.04); */
     outline: 2px solid white !important;
+    cursor: pointer;
 }
 
 .gallery-resources-alert {
@@ -143,6 +144,7 @@
 .focus-element-container img {
     max-height: 100%;
     object-fit: cover;
+    cursor: pointer;
 }
 
 .ob-gallery-image-focus {
