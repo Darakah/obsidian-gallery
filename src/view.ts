@@ -57,8 +57,9 @@ export class GalleryView extends ItemView {
         this.updateDisplay(this.plugin.settings.galleryLoadPath, '');
 
         this.imageFocusEl = this.displayEl.createDiv({ cls: 'ob-gallery-image-focus', attr: { 'style': 'display: none;' } });
-        this.focusImage = this.imageFocusEl.createEl('img', { attr: { style: 'display: none;' } });
-        this.focusVideo = this.imageFocusEl.createEl('video', { attr: { controls: "controls", src: " ", style: 'display: none; margin:auto;' } });
+        let focusElContainer = this.imageFocusEl.createDiv({ attr: { class: 'focus-element-container' } });
+        this.focusImage = focusElContainer.createEl('img', { attr: { style: 'display: none;' } });
+        this.focusVideo = focusElContainer.createEl('video', { attr: { controls: "controls", src: " ", style: 'display: none; margin:auto;' } });
         this.imgFocusIndex = 0;
 
         // Filter by path

@@ -68,8 +68,9 @@ export class GalleryProcessor {
 			});
 
 			let imageFocusEl = elCanvas.createDiv({ cls: 'ob-gallery-image-focus' });
-			let focusImage = imageFocusEl.createEl('img', { attr: { style: 'display: none;' } });
-			let focusVideo = imageFocusEl.createEl('video', { attr: { controls: "controls", src: " ", style: 'display: none; margin: auto;' } });
+			let focusElContainer = imageFocusEl.createDiv({ attr: { class: 'focus-element-container' } });
+			let focusImage = focusElContainer.createEl('img', { attr: { style: 'display: none;' } });
+			let focusVideo = focusElContainer.createEl('video', { attr: { controls: "controls", src: " ", style: 'display: none; margin: auto;' } });
 			let pausedVideo, pausedVideoUrl;
 			let imgFocusIndex = 0;
 
